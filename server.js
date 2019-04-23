@@ -1,22 +1,30 @@
 const Express = require("express");
 const MongoClient = require("mongodb").MongoClient;
-const BodyParser = require("body-parser");
+const Mongoose = require("mongoose");
+const graphqlHTTP = require("express-graphql");
 
-const routes = require("./routes/index");
+// configuration
+const schema = require("./schema/schema");
 const dbconf = require("./config/db");
-
 const port = 8000;
+
+// Connect the database
+// MongoClient.connect(dbconf.MONGO_URL, { useNewUrlParser: true });
+
+// Start the app
 const app = Express();
 
-app.use(BodyParser.json());
-app.use(BodyParser.urlencoded({ extended: true }));
+//app.use(BodyParser.json());
+//app.use(BodyParser.urlencoded({ extended: true }));
 
-MongoClient.connect(dbconf.MONGO_URL, { useNewUrlParser: true }, (err, database) => {
-  if (err) return console.error(err);
-
-  const db = database.db("farm-api");
-  routes(app, db);
-});
+// setup the GraphQL endpoint
+app.use(
+  "/graphql",
+  new graphqlHTTP({
+    schema,
+    graphiql: true
+  })
+);
 
 app.listen(port, () => {
   console.log("We are live on " + port);
