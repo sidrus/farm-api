@@ -17,7 +17,10 @@ const IS_DEV = true;
 
 // Connect the database
 const dburl = IS_DEV ? MONGO_URL_DEV : MONGO_URL;
-// mongoose.connect(dburl, {useNewUrlParser: true});
+mongoose.connect(dburl, {useNewUrlParser: true});
+mongoose.connection.once('open', () => {
+  console.log('connected to database');
+});
 
 // Start the app
 const app = express();

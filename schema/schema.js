@@ -13,6 +13,7 @@ const {
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
+  GraphQLNonNull,
 } = graphql;
 
 const VendorType = new GraphQLObjectType({
@@ -22,7 +23,9 @@ const VendorType = new GraphQLObjectType({
     name: {type: GraphQLString},
     products: {
       type: new GraphQLList(ProductType),
-      resolve(parent, args) {},
+      resolve(parent, args) {
+        return Product.find({vendorId: parent.Id}).exec();
+      },
     },
     website: {type: GraphQLString},
   }),
@@ -39,11 +42,15 @@ const ProductType = new GraphQLObjectType({
     minimum_quantity: {type: GraphQLInt},
     vendors: {
       type: new GraphQLList(VendorType),
-      resolve(parent, args) {},
+      resolve(parent, args) {
+        return Vendor.find({productId: parent.id}).exec();
+      },
     },
     attributes: {
       type: new GraphQLList(ProductAttributesType),
-      resolve(parent, args) {},
+      resolve(parent, args) {
+        return Attribute.find({productId: parent.id}).exec();
+      },
     },
   }),
 });
@@ -54,7 +61,9 @@ const ProductAttributesType = new GraphQLObjectType({
     id: {type: GraphQLID},
     product: {
       type: ProductType,
-      resolve(parent, args) {},
+      resolve(parent, args) {
+        return Product.findById(parent.productId).exec();
+      },
     },
     name: {type: GraphQLString},
     value: {type: GraphQLString},
@@ -67,7 +76,9 @@ const CropType = new GraphQLObjectType({
     id: {type: GraphQLID},
     seed: {
       type: ProductType,
-      resolve(parent, args) {},
+      resolve(parent, args) {
+        return Product.findById(parent.seedId).exec();
+      },
     },
     lot: {type: GraphQLString},
     germination_date: {type: GraphQLString},
@@ -161,12 +172,96 @@ const RootQueryType = new GraphQLObjectType({
   },
 });
 
-// const RootMutationType = new GraphQLObjectType({
-//  name: 'RootMutation',
-//  fields: {},
-// });
+const RootMutationType = new GraphQLObjectType({
+  name: 'RootMutation',
+  fields: {
+    addVendor: {
+      type: VendorType,
+      args: {
+        name: {type: new GraphQLNonNull(GraphQLString)},
+        website: {type: GraphQLString},
+      },
+      resolve(parent, args) {
+        const vendor = new Vendor({
+          name: args.name,
+          website: args.website,
+        });
+
+        return vendor.save();
+      },
+    },
+
+    addProduct: {
+      type: ProductType,
+      args: {
+        name: {type: new GraphQLNonNull(GraphQLString)},
+        upc: {type: GraphQLInt},
+        type: {type: GraphQLString},
+        current_quantity: {type: GraphQLInt},
+        minimum_quantity: {type: GraphQLInt},
+      },
+      resolve(parent, args) {
+        const product = new Product({
+          name: args.name,
+          upc: args.upc,
+          type: args.type,
+          current_quantity: args.current_quantity,
+          minimum_quantity: args.minimum_quantity,
+        });
+
+        return product.save();
+      },
+    },
+
+    addProductAttribute: {
+      type: ProductAttributesType,
+      args: {
+        productId: {type: new GraphQLNonNull(GraphQLID)},
+        name: {type: new GraphQLNonNull(GraphQLString)},
+        value: {type: GraphQLString},
+      },
+      resolve(parent, args) {
+        const pa = new Attribute({
+          name: args.name,
+          productId: args.productId,
+          value: args.value,
+        });
+
+        return pa.save();
+      },
+    },
+
+    addCrop: {
+      type: CropType,
+      args: {
+        seedId: {type: new GraphQLNonNull(GraphQLID)},
+        lot: {type: new GraphQLNonNull(GraphQLString)},
+        germination_date: {type: GraphQLString},
+        vegetative_date: {type: GraphQLString},
+        harvest_date: {type: GraphQLString},
+        traysize: {type: GraphQLString},
+        seed_weight: {type: GraphQLInt},
+        yield_weight: {type: GraphQLInt},
+      },
+      resolve(parent, args) {
+        const crop = new Crop({
+          seedId: args.seedId,
+          lot: args.lot,
+          germination_date: args.germination_date,
+          vegetative_date: args.vegetative_date,
+          harvest_date: args.harvest_date,
+          traysize: args.traysize,
+          seed_weight: args.seed_weight,
+          yield_weight: args.yield_weight,
+        });
+
+        return crop.save();
+      },
+    },
+  },
+});
 
 module.exports = new GraphQLSchema({
   query: RootQueryType,
-  // mutation: RootMutationType,
+  mutation: RootMutationType,
 });
