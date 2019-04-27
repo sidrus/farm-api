@@ -8,24 +8,24 @@ const RESOLVERS = {
       return Crop.find().exec();
     },
 
-    getCrop: (id) => {
-      return Crop.findById(id).exec();
+    getCrop: (root, args) => {
+      return Crop.findById(args.id).exec();
     },
 
     seeds: () => {
       return Seed.find().exec();
     },
 
-    getSeed: (id) => {
-      return Seed.findById(id).exec();
+    getSeed: (root, args) => {
+      return Seed.findById(args.id).exec();
     },
 
     vendors: () => {
       return Vendor.find().exec();
     },
 
-    getVendor: (id) => {
-      return Vendor.findById(id).exec();
+    getVendor: (root, args) => {
+      return Vendor.findById(args.id).exec();
     },
   },
 
@@ -78,6 +78,25 @@ const RESOLVERS = {
       const seed = await Seed.findById(args.seed.id).exec();
       Object.assign(seed, args.seed);
       return seed.save();
+    },
+
+    // ----------------------------------------
+    // Creates a new crop document with the
+    // properties given in the args parameter
+    // ---------------------------------------
+    createCrop: (root, args) => {
+      const crop = new Crop(args.crop);
+      return crop.save();
+    },
+
+    // --------------------------------------
+    // Updates a given crop document with the
+    // properties given in the args parameter
+    // --------------------------------------
+    updateCrop: async (root, args) => {
+      const crop = await Crop.findById(args.crop.id).exec();
+      Object.assign(crop, args.crop);
+      return crop.save();
     },
   },
 };
