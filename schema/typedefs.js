@@ -24,7 +24,7 @@ const TYPEDEFS = gql`
     id: ID!
     name: String!
     vendor: Vendor!
-    crops: [Crop!]!
+    crops: [Crop!]
     purchasedOn: String
     orderNumber: String
     lotNumber: String!
@@ -38,11 +38,11 @@ const TYPEDEFS = gql`
   }
 
   type Query {
-    crops: [Crop!]!
+    crops: [Crop!]
     getCrop(id: ID): Crop
-    seeds: [Seed!]!
+    seeds: [Seed!]
     getSeed(id: ID): Seed
-    vendors: [Vendor!]!
+    vendors: [Vendor!]
     getVendor(id: ID): Vendor
   }
 
@@ -63,7 +63,7 @@ const TYPEDEFS = gql`
     plantedOn: String
     rotatedOn: String
     harvestedOn: String
-    lotNumber: String!
+    lotNumber: String
   }
 
   """
@@ -71,7 +71,7 @@ const TYPEDEFS = gql`
   """
   input VendorInput {
     id: ID
-    name: String!
+    name: String
     website: String
   }
 
@@ -80,11 +80,11 @@ const TYPEDEFS = gql`
   """
   input SeedInput {
     id: ID
-    name: String!
+    name: String
     vendor: VendorInput!
     purchasedOn: String
     orderNumber: String
-    lotNumber: String!
+    lotNumber: String
     size: String
     origin: String
     germPercent: Int
