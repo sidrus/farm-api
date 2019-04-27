@@ -38,30 +38,25 @@ const TYPEDEFS = gql`
   }
 
   type Query {
-    """
-    Returns all crops in the database.
-    """
     crops: [Crop!]!
-    """
-    Returns all seeds in the database.
-    """
+    getCrop(id: ID): Crop
     seeds: [Seed!]!
-    """
-    Returns all vendors in the database.
-    """
+    getSeed(id: ID): Seed
     vendors: [Vendor!]!
+    getVendor(id: ID): Vendor
   }
 
   type Mutation {
     createCrop(crop: CropInput): Crop
+    updateCrop(crop: CropInput): Crop
+
     createVendor(vendor: VendorInput): Vendor
+    updateVendor(vendor: VendorInput): Vendor
+
     createSeed(seed: SeedInput): Seed
     updateSeed(seed: SeedInput): Seed
   }
 
-  """
-  Specifies the input structure of a crop
-  """
   input CropInput {
     id: ID
     seed: SeedInput!
