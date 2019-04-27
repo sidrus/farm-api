@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
+const {seedSchema} = require('./seed');
 
 const cropSchema = new Schema({
-  seedId: String,
-  lot: String,
-  germination_date: Date,
-  vegetation_date: Date,
-  harvest_date: Date,
-  traysize: String,
-  seed_weight: Number,
-  yield_weight: Number,
+  seed: seedSchema,
+  plantedOn: Date,
+  rotatedOn: Date,
+  harvestedOn: Date,
+  lotNumber: String,
 });
 
-module.exports = mongoose.model('Crop', cropSchema);
+module.exports.Crop = mongoose.model('Crop', cropSchema);
+module.exports.cropSchema = cropSchema;

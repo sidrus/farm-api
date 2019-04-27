@@ -10,12 +10,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "express-graphql": "^0.8.0",
+    "apollo-server": "^2.4.8",
+    "apollo-server-express": "^2.4.8",
+    "cors": "^2.8.5",
     "graphql": "^14.2.1",
-    "mongodb": "^3.2.3",
-    "mongoose": "^5.5.3"
+    "graphql-tools": "^4.0.4",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.5.4"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

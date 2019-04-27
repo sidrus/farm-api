@@ -1,42 +1,29 @@
-const express = require('express');
-const GraphqlHTTP = require('express-graphql');
-const mongoose = require('mongoose');
-
-// import express from 'express';
-// import GraphqlHTTP from 'express-graphql';
-// import mongoose from 'mongoose';
+const cors = require('cors');
+const {ApolloServer} = require('apollo-server-express');
+const Express = require('express');
+const Mongoose = require('mongoose');
 
 // configuration
-const schema = require('./schema/schema');
+const typeDefs = require('./schema/typedefs');
+const resolvers = require('./schema/resolvers');
 const {MONGO_URL, MONGO_URL_DEV} = require('./config/db');
-// import schema from './schema/schema';
-// import { MONGO_URL_DEV, MONGO_URL } from './config/db';
-
-const port = 8000;
 const IS_DEV = true;
-
-// Connect the database
 const dburl = IS_DEV ? MONGO_URL_DEV : MONGO_URL;
-mongoose.connect(dburl, {useNewUrlParser: true});
-mongoose.connection.once('open', () => {
-  console.log('connected to database');
+
+const PORT = process.env.PORT || 4000;
+const app = new Express();
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
 });
 
-// Start the app
-const app = express();
+Mongoose.connect(dburl, {useNewUrlParser: true});
+Mongoose.connection.once('open', () => {
+  console.log('Connected to the mongo database');
+});
 
-// app.use(BodyParser.json());
-// app.use(BodyParser.urlencoded({ extended: true }));
-
-// setup the GraphQL endpoint
-app.use(
-    '/graphql',
-    new GraphqlHTTP({
-      schema,
-      graphiql: true,
-    })
+server.applyMiddleware({app});
+app.use(cors);
+app.listen({port: PORT}, () =>
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
-
-app.listen(port, () => {
-  console.log('We are live on ' + port);
-});
