@@ -3,8 +3,8 @@ const {gql} = require('apollo-server');
 const TYPEDEFS = gql`
   "The crop represents the basic tracking item of the system"
   type Crop {
-    id: ID!
-    seed: Seed!
+    id: ID
+    seed: Seed
     plantedOn: String
     rotatedOn: String
     harvestedOn: String
@@ -13,18 +13,18 @@ const TYPEDEFS = gql`
 
   "A vendor is any company which supplies seed to the farm."
   type Vendor {
-    id: ID!
-    name: String!
+    id: ID
+    name: String
     website: String
-    seeds: [Seed!]!
+    seeds: [Seed]
   }
 
   "A seed is planted in a crop and grown to harvest."
   type Seed {
-    id: ID!
-    name: String!
-    vendor: Vendor!
-    crops: [Crop!]
+    id: ID
+    name: String
+    vendor: Vendor
+    crops: [Crop]
     purchasedOn: String
     orderNumber: String
     lotNumber: String!
@@ -38,11 +38,13 @@ const TYPEDEFS = gql`
   }
 
   type Query {
-    crops: [Crop!]
+    crops: [Crop]
     getCrop(id: ID): Crop
-    seeds: [Seed!]
+
+    seeds: [Seed]
     getSeed(id: ID): Seed
-    vendors: [Vendor!]
+
+    vendors: [Vendor]
     getVendor(id: ID): Vendor
   }
 
@@ -59,7 +61,7 @@ const TYPEDEFS = gql`
 
   input CropInput {
     id: ID
-    seed: SeedInput!
+    seed: ID!
     plantedOn: String
     rotatedOn: String
     harvestedOn: String
@@ -80,8 +82,8 @@ const TYPEDEFS = gql`
   """
   input SeedInput {
     id: ID
-    name: String
-    vendor: VendorInput!
+    name: String!
+    vendor: ID!
     purchasedOn: String
     orderNumber: String
     lotNumber: String

@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
-const {vendorSchema} = require('./vendor');
-const {cropSchema} = require('./crop');
-
-console.log(`Crop Schema: ${cropSchema}`);
 
 const seedSchema = new Schema({
   name: String,
-  vendor: vendorSchema,
+  vendor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Vendor',
+    required: true,
+  },
   purchasedOn: Date,
   orderNumber: String,
   lotNumber: String,

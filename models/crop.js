@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
-const {seedSchema} = require('./seed');
 
 const cropSchema = new Schema({
-  seed: seedSchema,
+  seed: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Seed',
+    required: true,
+  },
   plantedOn: Date,
   rotatedOn: Date,
   harvestedOn: Date,

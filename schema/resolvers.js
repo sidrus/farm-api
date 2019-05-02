@@ -59,14 +59,8 @@ const RESOLVERS = {
     // create or update the vendor object
     // -------------------------------------
     createSeed: async (root, args) => {
+      console.log(args.seed);
       const seed = new Seed(args.seed);
-
-      // apply vendor updates
-      const vendor =
-        (await Vendor.findById(args.seed.vendor.id)) || new Vendor();
-      Object.assign(vendor, args.seed.vendor);
-      vendor.save();
-
       return seed.save();
     },
 
@@ -97,6 +91,37 @@ const RESOLVERS = {
       const crop = await Crop.findById(args.crop.id).exec();
       Object.assign(crop, args.crop);
       return crop.save();
+    },
+  },
+
+  // -------------------------------------------
+  // This resolver fetches seeds for a specific
+  // vendor
+  // -------------------------------------------
+  Vendor: {
+    seeds: (root, args) => {
+      return Seed.find({vendorId: root.id}).exec();
+    },
+  },
+
+  // -------------------------------------------
+  // This resolver fetches crops for a specific
+  // seed.  Useful to find out which crops used
+  // a specific seed.
+  // -------------------------------------------
+  Seed: {
+    vendor: (root, args) => {
+      return Vendor.findById(root.vendor).exec();
+    },
+
+    crops: (root, args) => {
+      return Crop.find({seedId: root.id}).exec();
+    },
+  },
+
+  Crop: {
+    seed: (root, args) => {
+      return Seed.findById(root.seed).exec();
     },
   },
 };
